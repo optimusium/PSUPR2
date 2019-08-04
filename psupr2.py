@@ -71,7 +71,8 @@ def grayplt(img,title=''):
 
 
 # .............................................................................
-raw_data = pd.read_excel('td5.xlsx',sheet_name = "td5")
+#raw_data = pd.read_excel('td5.xlsx',sheet_name = "td5")
+raw_data = pd.read_excel('td6.xlsx',sheet_name = "td6")
 sdarray=raw_data.drop(["saw","grind","dielectric"],axis=1)
 raw_label=raw_data.saw+2*raw_data.grind+4*raw_data.dielectric
 
@@ -112,8 +113,10 @@ print(len(tsLbl))
 #raise
                             # Convert the data into 'float32'
                             # Rescale the values from 0~255 to 0~1
-trDat       = trDat.astype('float32')/5 #/255
-tsDat       = tsDat.astype('float32')/5 #/255
+#trDat       = trDat.astype('float32')/5 #/255
+#tsDat       = tsDat.astype('float32')/5 #/255
+trDat       = trDat.astype('float32')/500 #/255
+tsDat       = tsDat.astype('float32')/500 #/255
 
 
                             # Retrieve the row size of each image
@@ -207,7 +210,7 @@ model.fit(trDat,
           trLbl, 
           validation_data=(tsDat, tsLbl), 
           epochs=60, 
-          batch_size=128,
+          batch_size=32,
           callbacks=callbacks_list)
 
 

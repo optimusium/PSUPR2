@@ -123,12 +123,12 @@ def resBlkV1(inputs,
         blkStr  = str(run+1)            
         if downsampleOnFirst and run == 0:               
             strides     = 2                   
-            y       = resLyr(inputs=x, numFilters=numFilters, strides=strides, lyrName=names+"y1")           
-            y       = resLyr(inputs=y, numFilters=numFilters, activation=None, lyrName=names+"y2")              
+        y       = resLyr(inputs=x, numFilters=numFilters, strides=strides, lyrName=names+"y1")           
+        y       = resLyr(inputs=y, numFilters=numFilters, activation=None, lyrName=names+"y2")              
         if downsampleOnFirst and run == 0:               
             x   = resLyr(inputs=x, numFilters=numFilters, kernelSz=1, strides=strides, activation=None, batchNorm=False, lyrName=names+"x0")           
-            x       = add([x,y],                         name=names+"x1")           
-            x       = Activation('relu',                                name=names+"x2")(x)             
+        x       = add([x,y],                         name=names+"x1")           
+        x       = Activation('relu',                                name=names+"x2")(x)             
     return x
     
 

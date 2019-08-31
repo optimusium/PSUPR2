@@ -123,12 +123,12 @@ def resBlkV1(inputs,
         blkStr  = str(run+1)            
         if downsampleOnFirst and run == 0:               
             strides     = 2                   
-        y       = resLyr(inputs=x, numFilters=numFilters, strides=strides, lyrName=names+"y1")           
-        y       = resLyr(inputs=y, numFilters=numFilters, activation=None, lyrName=names+"y2")              
+        y       = resLyr(inputs=x, numFilters=numFilters, strides=strides, lyrName=names+"y1_%s"%run)           
+        y       = resLyr(inputs=y, numFilters=numFilters, activation=None, lyrName=names+"y2_%s"%run)              
         if downsampleOnFirst and run == 0:               
-            x   = resLyr(inputs=x, numFilters=numFilters, kernelSz=1, strides=strides, activation=None, batchNorm=False, lyrName=names+"x0")           
-        x       = add([x,y],                         name=names+"x1")           
-        x       = Activation('relu',                                name=names+"x2")(x)             
+            x   = resLyr(inputs=x, numFilters=numFilters, kernelSz=1, strides=strides, activation=None, batchNorm=False, lyrName=names+"x0_%s"%run)           
+        x       = add([x,y],                         name=names+"x1_%s"%run)           
+        x       = Activation('relu',                                name=names+"x2_%s"%run)(x)             
     return x
     
 
@@ -139,12 +139,12 @@ def createResNetV1(inputShape=(32,32,3),
     
     inputs      = Input(shape=inputShape)       
     v           = resLyr(inputs,                            lyrName='Inpt')       
-    v           = resBlkV1(inputs=v, numFilters=16,  numBlocks=3, downsampleOnFirst=False, names='Stg1')       
+    v           = resBlkV1(inputs=v, numFilters=16,  numBlocks=4, downsampleOnFirst=False, names='Stg1')       
     v           = resBlkV1(inputs=v, numFilters=32,  numBlocks=3, downsampleOnFirst=True,  names='Stg2')       
     v           = resBlkV1(inputs=v, numFilters=64,  numBlocks=3, downsampleOnFirst=True,  names='Stg3')       
-    v           = resBlkV1(inputs=v, numFilters=128,  numBlocks=3, downsampleOnFirst=True,  names='Stg4')       
-    #v           = AveragePooling2D(pool_size=8,  name='AvgPool')(v)       
-    v           = AveragePooling2D(pool_size=4,  name='AvgPool')(v)       
+    #v           = resBlkV1(inputs=v, numFilters=128,  numBlocks=3, downsampleOnFirst=True,  names='Stg4')       
+    v           = AveragePooling2D(pool_size=8,  name='AvgPool')(v)       
+    v#           = AveragePooling2D(pool_size=4,  name='AvgPool')(v)       
     v           = Flatten()(v)       
     outputs     = Dense(numClasses, activation='softmax', kernel_initializer='he_normal')(v)       
     model       = Model(inputs=inputs,outputs=outputs)       
@@ -217,7 +217,7 @@ datagen = ImageDataGenerator(width_shift_range=0.1,
 
 model.fit_generator(datagen.flow(trDat, trLbl, batch_size=32),
                     validation_data=(tsDat, tsLbl),
-                    epochs=200, 
+                    epochs=1, 
                     verbose=1,
                     steps_per_epoch=len(trDat)/32,
                     callbacks=callbacks_list)

@@ -317,7 +317,7 @@ model.summary()
 plot_model(model, to_file='model_plot.png', show_shapes=True, show_layer_names=True)
 
 #IPython.display.Image("model_plot.png")
-raise
+#raise
 # .............................................................................
 
 def lrSchedule(epoch):

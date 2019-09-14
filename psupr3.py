@@ -25,11 +25,11 @@ from tensorflow.keras.layers import Activation
 from tensorflow.keras.layers import AveragePooling2D,MaxPooling2D
 from tensorflow.keras.layers import add
 from tensorflow.keras.regularizers import l2
-from tensorflow.keras.utils import to_categorical
+from tensorflow.keras.utils import to_categorical,plot_model
 from tensorflow.keras.datasets import cifar10
 from tensorflow.keras import optimizers
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
-
+import IPython
 
                             # Setting up the font manager, so that
                             # it can show japanese characters correctly
@@ -286,15 +286,19 @@ def createResNetV1(inputShape=(21,21,1),
     inputs      = Input(shape=inputShape)       
     v           = resLyr(inputs,                            lyrName='Inpt') 
           
-    v           = resBlkV1(inputs=v, numFilters=16,  numBlocks=3, downsampleOnFirst=False, names='Stg1')       
+    v           = resBlkV1(inputs=v, numFilters=16,  numBlocks=3, downsampleOnFirst=False, names='Stg1') 
+         
     v           = resBlkV1Max(inputs=v, numFilters=32,  numBlocks=3, downsampleOnFirst=True,  names='Stg2')       
     v           = resBlkV1(inputs=v, numFilters=64,  numBlocks=3, downsampleOnFirst=True,  names='Stg3')       
-    v           = resBlkV1(inputs=v, numFilters=128,  numBlocks=4, downsampleOnFirst=True,  names='Stg4')       
+    v           = resBlkV1(inputs=v, numFilters=128,  numBlocks=4, downsampleOnFirst=True,  names='Stg4')  
+         
     v           = AveragePooling2D(pool_size=2,  name='AvgPool')(v)       
     #v           = AveragePooling2D(pool_size=4,  name='AvgPool')(v)       
-    v           = Flatten()(v)       
+    v           = Flatten()(v)  
+      
     
-    outputs     = Dense(numClasses, activation='softmax', kernel_initializer='he_normal')(v)   
+    outputs     = Dense(numClasses, activation='softmax', kernel_initializer='he_normal')(v)  
+    
         
     model       = Model(inputs=inputs,outputs=outputs)       
     model.compile(loss='categorical_crossentropy', optimizer=optmz, metrics=['accuracy'])   
@@ -310,24 +314,31 @@ modelGo     = createResNetV1()  # This is used for final testing
 #modelGo     = createModel() # This is used for final testing
 
 model.summary()
+plot_model(model, to_file='model_plot.png', show_shapes=True, show_layer_names=True)
 
-#raise
+#IPython.display.Image("model_plot.png")
+raise
 # .............................................................................
 
 def lrSchedule(epoch):
-    lr  = 1e-3
+    lr  = 2e-3
     
-    if epoch > 160:
+    if epoch > 195:
+        lr  *= 0.5
+    elif epoch > 180:
         lr  *= 0.5e-3
         
-    elif epoch > 140:
+    elif epoch > 160:
         lr  *= 1e-3
         
-    elif epoch > 120:
+    elif epoch > 140:
         lr  *= 1e-2
         
-    elif epoch > 80:
+    elif epoch > 100:
         lr  *= 1e-1
+    elif epoch > 50:
+        lr  *= 1e-4
+        
         
     print('Learning rate: ', lr)
     

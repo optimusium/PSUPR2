@@ -2,7 +2,7 @@
 """
 Created on Sat Sep 14 14:28:46 2019
 
-@author: handc
+@author: Ong Boon Ping (A0195172B), Tan Chin Gee (A0195296M), & Han Dongchou Francis (A0195414A) 
 """
 
 import numpy as np
